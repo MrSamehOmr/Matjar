@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/DataAccessLayer/bin
+/DataAccessLayer/obj
+/DataAccessLayer/Properties
+/DataAccessLayer/app.config
+/DataAccessLayer/packages.config

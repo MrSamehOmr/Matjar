@@ -1,0 +1,7 @@
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\bin\Debug\GControls.dll
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\bin\Debug\GControls.pdb
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\obj\Debug\GControls.dll
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\obj\Debug\GControls.pdb
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\obj\Debug\GControls.Properties.Resources.resources
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\obj\Debug\GControls.csproj.GenerateResource.Cache
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\GControls\obj\Debug\GControls.csprojResolveAssemblyReference.cache

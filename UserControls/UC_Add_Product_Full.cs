@@ -13,7 +13,6 @@ namespace UserControls
 
         public UC_Add_Product_Full()
         {
-            // comment
             InitializeComponent();
         }
 

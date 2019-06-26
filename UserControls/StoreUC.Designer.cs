@@ -60,13 +60,13 @@
             this.dgv_store.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgv_store.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv_store.ColumnHeadersHeight = 40;
+            this.dgv_store.ColumnHeadersHeight = 50;
             this.dgv_store.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgv_store.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.category,
@@ -79,7 +79,7 @@
             this.profit_margin});
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.Aqua;
             dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
@@ -89,6 +89,7 @@
             this.dgv_store.EnableHeadersVisualStyles = false;
             this.dgv_store.Location = new System.Drawing.Point(0, 0);
             this.dgv_store.Name = "dgv_store";
+            this.dgv_store.ReadOnly = true;
             this.dgv_store.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.dgv_store.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -99,7 +100,6 @@
             dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgv_store.RowHeadersDefaultCellStyle = dataGridViewCellStyle7;
-            this.dgv_store.RowHeadersVisible = false;
             this.dgv_store.RowHeadersWidth = 30;
             this.dgv_store.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgv_store.RowTemplate.Height = 30;
@@ -128,18 +128,22 @@
             this.category.DataPropertyName = "category";
             this.category.HeaderText = "القسم";
             this.category.Name = "category";
+            this.category.ReadOnly = true;
+            this.category.Width = 150;
             // 
             // product_id
             // 
             this.product_id.DataPropertyName = "product_id";
             this.product_id.HeaderText = "كود الصنف";
             this.product_id.Name = "product_id";
+            this.product_id.ReadOnly = true;
             // 
             // product_name
             // 
             this.product_name.DataPropertyName = "product_name";
             this.product_name.HeaderText = "اسم الصنف";
             this.product_name.Name = "product_name";
+            this.product_name.ReadOnly = true;
             this.product_name.Width = 200;
             // 
             // unit
@@ -147,6 +151,7 @@
             this.unit.DataPropertyName = "unit";
             this.unit.HeaderText = "الوحدة";
             this.unit.Name = "unit";
+            this.unit.ReadOnly = true;
             // 
             // amount
             // 
@@ -156,6 +161,7 @@
             this.amount.DefaultCellStyle = dataGridViewCellStyle2;
             this.amount.HeaderText = "الكمية";
             this.amount.Name = "amount";
+            this.amount.ReadOnly = true;
             // 
             // selling_price
             // 
@@ -166,6 +172,7 @@
             this.selling_price.DefaultCellStyle = dataGridViewCellStyle3;
             this.selling_price.HeaderText = "سعر البيع";
             this.selling_price.Name = "selling_price";
+            this.selling_price.ReadOnly = true;
             // 
             // purchasing_price
             // 
@@ -176,6 +183,7 @@
             this.purchasing_price.DefaultCellStyle = dataGridViewCellStyle4;
             this.purchasing_price.HeaderText = "سعر الشراء";
             this.purchasing_price.Name = "purchasing_price";
+            this.purchasing_price.ReadOnly = true;
             // 
             // profit_margin
             // 
@@ -185,6 +193,7 @@
             this.profit_margin.DefaultCellStyle = dataGridViewCellStyle5;
             this.profit_margin.HeaderText = "هامش الربح";
             this.profit_margin.Name = "profit_margin";
+            this.profit_margin.ReadOnly = true;
             // 
             // StoreUC
             // 

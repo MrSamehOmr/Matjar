@@ -11,12 +11,14 @@ namespace UserControls
 {
     public partial class UC_Sales : UserControl
     {
-        
+
+        //private DataTable AllCategoryProducts { get; set; }
+        //private string category;
+        //private int category_id;
+
         DBHandler db { get; set; }
         private Product current_product = new Product();
         private Timer timer = new Timer();
-        private string category;
-        private int category_id;
         private string next_process_id;
         private int last_serial;
         private string work_day;
@@ -46,13 +48,66 @@ namespace UserControls
                 timer.Tick += timer_Tick;
                 timer.Start();
                 db = new DBHandler();
-                btn_normals.PerformClick();
 
                 date_picker_work_day.Value = DateTime.Now.Date;
 
                 viewWorkDaySales();
             }
             dgv_sales.CellValueChanged += dgv_sales_CellValueChanged;
+
+            GetCategories();
+            combo_category_name.SelectedValueChanged += combo_category_name_SelectedValueChanged;
+            combo_category_name_SelectedValueChanged(combo_category_name, EventArgs.Empty);
+        }
+
+        private void GetCategories()
+        {
+            DataTable categories_table = db.ExecuteSQL("SELECT id, category FROM categories");
+            combo_category_name.DataSource = categories_table;
+            combo_category_name.DisplayMember = "category";
+            combo_category_name.ValueMember = "id";
+        }
+        private void combo_category_name_SelectedValueChanged(object sender, EventArgs e)
+        {
+            lbl_category_id.Text = combo_category_name.SelectedValue.ToString();
+            string sql = @"SELECT products.product_id,
+                            products_names.product_name,
+                            units.unit AS unit_name,
+                            units.id As unit_id,
+                            products.amount,
+                            products.selling_price
+                            FROM products
+                                   INNER JOIN
+                                   products_names ON products.product_name_id = products_names.product_name_id
+                                   INNER JOIN
+                                   units ON products.unit_id = units.id
+                            WHERE products.category_id = ";
+            sql += combo_category_name.SelectedValue.ToString();
+            sql += " ORDER BY products_names.product_name";
+
+            combo_product_name.DataSource = db.ExecuteSQL(sql);
+            combo_product_name.DisplayMember = "product_name";
+            combo_product_name.ValueMember = "product_id";
+            combo_product_name.SelectedValueChanged += combo_product_name_ValueMemberChanged;
+            combo_product_name_ValueMemberChanged(combo_product_name, EventArgs.Empty);
+        }
+
+
+        private void combo_product_name_ValueMemberChanged(object sender, EventArgs e)
+        {
+
+            if (combo_product_name.SelectedValue != null)
+            {
+                lbl_product_id.Text = combo_product_name.SelectedValue.ToString();
+                this.current_product.ProductID = int.Parse(combo_product_name.SelectedValue.ToString());
+                Console.WriteLine(this.current_product.ProductID);
+                lbl_price.Text = this.current_product.selling_price.ToString();
+                lbl_unit.Text = this.current_product.unit_name.ToString();
+
+                upateTotal();
+                text_quantity.Focus();
+                text_quantity.SelectAll();
+            }
         }
 
         private void viewWorkDaySales()
@@ -66,9 +121,9 @@ namespace UserControls
                             JOIN products_names ON products.product_name_id = products_names.product_name_id
                             JOIN units ON sales.unit_id = units.id
                             WHERE sales.process_id LIKE '{0}____' ORDER BY process_id", work_day);
-            DataTable t = db.ExecuteSQL(sql);
-            dgv_sales.DataSource = t;
-            next_process_id = generateProcessID(t);
+            DataTable sates_table = db.ExecuteSQL(sql);
+            dgv_sales.DataSource = sates_table;
+            next_process_id = generateProcessID(sates_table);
         }
         private string generateProcessID(DataTable t)
         {
@@ -101,31 +156,7 @@ namespace UserControls
             last_serial++;
             next_process_id = work_day.PadRight(12 - last_serial.ToString().Length, '0') + (last_serial).ToString();
         }
-        private void categoryProducts(object sender)
-        {
-            Cursor = Cursors.WaitCursor;
-            Button btn = (Button)sender;
-            category = btn.Text;
-            category_id = int.Parse(db.select(new string[] { "id" }, "categories", "category", btn.Text).Rows[0][0].ToString());
-            pnl_down.Location = new Point(btn.Location.X, pnl_down.Location.Y);
 
-            string sql = @"SELECT products.product_id,
-                            products_names.product_name 
-                            FROM products
-                                   INNER JOIN
-                                   products_names ON products.product_name_id = products_names.product_name_id
-                                   INNER JOIN
-                                   units ON products.unit_id = units.id
-                            WHERE products.category_id = ";
-            sql += category_id.ToString();
-            sql += " ORDER BY products_names.product_name";
-
-            DataTable t = db.ExecuteSQL(sql);
-
-            combo_id.DataSource = t.ColumnToArray(0);
-            combo_product_name.DataSource = t.ColumnToArray(1);
-            Cursor = Cursors.Default;
-        }
 
         private void upateTotal()
         {
@@ -134,64 +165,10 @@ namespace UserControls
             double.TryParse(text_quantity.Text, out quantity);
             lbl_total.Text = (price * quantity).ToString();
         }
-        //[ My Methodes ] end
-
-        private void btn_normals_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_automatics_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_cosmetics_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_fluids_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_paperwork_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_pesticides_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_toilet_soap_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void btn_other_Click(object sender, EventArgs e)
-        {
-            categoryProducts(sender);
-        }
-
-        private void combo_product_name_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            combo_id.SelectedIndex = combo_product_name.SelectedIndex;
 
 
-            this.current_product.ProductID = int.Parse(combo_id.Text);
 
 
-            lbl_price.Text = this.current_product.selling_price.ToString();
-            lbl_unit.Text = this.current_product.unit_name.ToString();
-
-            upateTotal();
-            text_quantity.Focus();
-            text_quantity.SelectAll();
-
-        }
 
         private void text_quantity_TextChanged(object sender, EventArgs e)
         {
@@ -206,7 +183,7 @@ namespace UserControls
         private void btn_save_Click(object sender, EventArgs e)
         {
             double x;
-            if (text_quantity.Text == "0" || !double.TryParse(text_quantity.Text, out x ))
+            if (text_quantity.Text == "0" || !double.TryParse(text_quantity.Text, out x))
                 return;
             List<string> data = new List<string>();
 
@@ -276,7 +253,7 @@ namespace UserControls
             {
                 for (int i = 0; i < selected.Count; i++)
                 {
-                    db.deleteData("sales", selected[i].Cells[0].Value.ToString());
+                    db.DeleteData("sales", selected[i].Cells[0].Value.ToString());
                     dgv_sales.Rows.Remove(selected[i]);
                 }
                 MessageBox.Show("تم الحذف", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -286,7 +263,7 @@ namespace UserControls
                 dgv_sales.ClearSelection();
                 dgv_sales.Rows[current_row_index].Selected = true;
 
-                db.deleteData("sales", dgv_sales.Rows[current_row_index].Cells[0].Value.ToString());
+                db.DeleteData("sales", dgv_sales.Rows[current_row_index].Cells[0].Value.ToString());
                 dgv_sales.Rows.RemoveAt(current_row_index);
                 MessageBox.Show("تم الحذف", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -306,7 +283,7 @@ namespace UserControls
 
         public void dgv_sales_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 5)
+            if (e.ColumnIndex == 5 || e.ColumnIndex == 6)
             {
                 double day_total = double.Parse(lbl_day_total.Text);
                 day_total = day_total - double.Parse(dgv_sales.Rows[e.RowIndex].Cells[7].Value.ToString());
@@ -317,7 +294,7 @@ namespace UserControls
                 price = double.Parse(dgv_sales.Rows[e.RowIndex].Cells[6].Value.ToString());
                 total = amount * price;
                 process_id = dgv_sales.Rows[e.RowIndex].Cells[0].Value.ToString();
-                db.update("sales", amount, price, total, process_id);
+                db.UpdateSalesTable(amount, price, total, process_id);
                 dgv_sales.Rows[e.RowIndex].Cells[7].Value = total;
                 day_total += total;
                 lbl_day_total.Text = day_total.ToString();
@@ -330,6 +307,31 @@ namespace UserControls
             lbl_work_day.Text = date_picker_work_day.Value.ToString("ddd") + " " + date_picker_work_day.Value.ToString("yyyy/M/d");
             this.work_day = date_picker_work_day.Value.ToString("yyyyMMdd");
             viewWorkDaySales();
+        }
+
+        private void gbtn_view_products_Click(object sender, EventArgs e)
+        {
+            FormAllCategoryProducts all = new FormAllCategoryProducts();
+            all.SelectedProductChanged += all_SelectedProductChanged;
+
+            all.ProductSaved += all_ProductSaved;
+
+            all.ShowDialog(combo_category_name.DataSource);
+
+        }
+
+        private void all_ProductSaved(object sender, SelectedProductChangedArgs e)
+        {
+            combo_category_name.Text = e.CategoryName;
+            combo_product_name.SelectedValue = e.ProductName;
+            text_quantity.Text = e.Amount;
+            btn_save.PerformClick();
+        }
+
+        private void all_SelectedProductChanged(object sender, SelectedProductChangedArgs e)
+        {
+            combo_category_name.Text = e.CategoryName;
+            combo_product_name.SelectedValue = e.ProductName;
         }
 
 

@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using GControls;
 using System.Collections.Generic;
 using Models;
+using System.Drawing;
 
 namespace UserControls
 {
@@ -116,16 +117,16 @@ ORDER BY products_units_info.sub_unit_count ASC",
             combo_base_units.Text = dgv_info.Rows[row_index].Cells[1].Value.ToString();
             combo_sub_units.Text = dgv_info.Rows[row_index].Cells[3].Value.ToString();
             text_contents_amount.Text = dgv_info.Rows[row_index].Cells[5].Value.ToString();
-            comboBox1.Text = dgv_info.Rows[row_index].Cells[6].Value.ToString();
+            combo_is_purchaseable.Text = dgv_info.Rows[row_index].Cells[6].Value.ToString();
         }
 
-        private bool IsNameExisted() 
+        private bool IsNameExisted()
         {
-            return combo_existed_products_names.FindStringExact(text_new_product_name.Text) >= 0; 
+            return combo_existed_products_names.FindStringExact(text_new_product_name.Text) >= 0;
         }
 
 
-        private bool IsNameAndUnitExisted(out Product existed_product) 
+        private bool IsNameAndUnitExisted(out Product existed_product)
         {
             // YES -> is the name and the unit, existed ?
             combo_existed_products_names.Text = text_new_product_name.Text;
@@ -151,7 +152,7 @@ combo_units.SelectedValue.ToString());
                 return true;
             }
 
-            else 
+            else
             {
                 existed_product = null;
                 return false;
@@ -180,7 +181,7 @@ SET unit_id = {0},
     profit_margin = {4}
 WHERE product_id = {5}
 "
-                    ,combo_units.SelectedValue.ToString(),
+                    , combo_units.SelectedValue.ToString(),
                     text_amount.Text,
                     text_purchasing_price.Text,
                     text_selling_price.Text,
@@ -189,7 +190,7 @@ WHERE product_id = {5}
                 db.ExecuteNonQuery(update_product_data);
             }
         }
-        private void InsertNewProduct() 
+        private void InsertNewProduct()
         {
             List<string> new_data = new List<string>();
             new_data.Add(combo_existed_products_names.Text);
@@ -285,12 +286,12 @@ VALUES
                 else
                 {
                     DialogResult update_names_message = MessageBox.Show(string.Format(
- 
+
                         @"
 هل تريد اضافة هذا المنتج الجديد ؟
 اسم القسم : {0}
 اسم المنتج : {1}"
-                        ,combo_categories.Text,
+                        , combo_categories.Text,
                         text_new_product_name.Text),
                         "اضافة منتج جديد",
                         MessageBoxButtons.OKCancel,
@@ -337,6 +338,88 @@ VALUES
             lbl_add_new_product_name.Visible = false;
             btn_back.Visible = false;
             text_new_product_name.Text = "";
+        }
+
+        private void TextBoxFocused(object sender, EventArgs e)
+        {
+            TextBox text = (TextBox)sender;
+            text.SelectAll();
+        }
+
+        private void btn_info_save_Click(object sender, EventArgs e)
+        {
+            double amount;
+            if (!double.TryParse(text_contents_amount.Text, out amount))
+            {
+                MessageBox.Show("لقد تم كتابة العدد بطريقة خاطئة");
+                return;
+            }
+            if (string.IsNullOrEmpty(combo_is_purchaseable.Text))
+            {
+                MessageBox.Show("يرجى تحديد ما اذا كانت الوحدة الفرعية قابلة للشراء ام لا");
+                return;
+            }
+            if (combo_base_units.Text == combo_sub_units.Text)
+            {
+                text_contents_amount.Text = "1";
+                combo_is_purchaseable.Text = "لا";
+                return;
+            }
+
+            foreach (DataGridViewRow row in dgv_info.Rows)
+            {
+                bool update = false;
+                if (
+                    combo_base_units.SelectedValue.ToString() == row.Cells["base_unit_id"].Value.ToString() &&
+                    combo_sub_units.SelectedValue.ToString() == row.Cells["sub_unit_id"].Value.ToString() &&
+                    text_contents_amount.Text == row.Cells["sub_unit_count"].Value.ToString() &&
+                    combo_is_purchaseable.Text == row.Cells["sub_unit_is_purchaseable"].Value.ToString()
+                    )
+                {
+                    MessageBox.Show("هذه البيانات موجودة بالفعل و سيتم تجاهلها و لا يوجد اي تعديلات");
+                    return;
+                }
+
+                else if (
+                    combo_base_units.SelectedValue.ToString() != row.Cells["base_unit_id"].Value.ToString() &&
+                    combo_sub_units.SelectedValue.ToString() != row.Cells["sub_unit_id"].Value.ToString() &&
+                    text_contents_amount.Text != row.Cells["sub_unit_count"].Value.ToString() &&
+                    combo_is_purchaseable.Text != row.Cells["sub_unit_is_purchaseable"].Value.ToString()
+                    )
+                {
+                    // Add new information
+                }
+                
+                List<string> old_data = new List<string>();
+                old_data.Add(row.Cells["base_unit_name"].Value.ToString());
+                old_data.Add(row.Cells["sub_unit_name"].Value.ToString());
+                old_data.Add(row.Cells["sub_unit_count"].Value.ToString());
+                old_data.Add(row.Cells["sub_unit_is_purchaseable"].Value.ToString());
+
+                List<string> new_data = new List<string>();
+                new_data.Add(combo_base_units.Text);
+                new_data.Add(combo_sub_units.Text);
+                new_data.Add(text_contents_amount.Text);
+                new_data.Add(combo_is_purchaseable.Text);
+
+
+                FormExistedDataMessage msg = new FormExistedDataMessage();
+                MessageResult result = msg.Confirm(old_data, new_data);
+
+                if ( result == MessageResult.SAVE_NEW)
+                {
+                    MessageBox.Show("تم الحفظ بنجاح");
+                }
+                else if (result == MessageResult.MODIFY_EXISTED)
+                {
+                    MessageBox.Show("تم التعديل بنجاح");
+                }
+
+                else if ( result == MessageResult.IGNORE)
+                {
+                    MessageBox.Show("تم الاغاء");
+                }
+            }
         }
 
     }

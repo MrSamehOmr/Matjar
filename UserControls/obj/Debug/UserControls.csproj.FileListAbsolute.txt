@@ -25,3 +25,5 @@ E:\WorkSpace\Programing\Desktop\CSharp\Matjar\UserControls\bin\Debug\GControls.d
 E:\WorkSpace\Programing\Desktop\CSharp\Matjar\UserControls\bin\Debug\GControls.pdb
 E:\WorkSpace\Programing\Desktop\CSharp\Matjar\UserControls\obj\Debug\UserControls.UC_Add_Product_Full.resources
 E:\WorkSpace\Programing\Desktop\CSharp\Matjar\UserControls\obj\Debug\UserControls.FormExistedDataMessage.resources
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\UserControls\obj\Debug\UserControls.FormAllCategoryProducts.resources
+E:\WorkSpace\Programing\Desktop\CSharp\Matjar\UserControls\obj\Debug\UserControls.UC_SearchTable.resources

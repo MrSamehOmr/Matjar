@@ -265,11 +265,11 @@ namespace DataAccessLayer
 
 
         // Delete inserted data
-        public void deleteData(string table_name, string id)
+        public void DeleteData(string table_name, string id)
         {
             string sql = "DELETE FROM " + table_name + " WHERE process_id = " + id;
-            SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-            cmd.ExecuteNonQuery();
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+                cmd.ExecuteNonQuery();
         }
 
         public void deleteData(string table_name, string id_column, string id)
@@ -281,12 +281,13 @@ namespace DataAccessLayer
 
 
         // update sales table 
-        public void update(string table_name, double quantity, double price, double total, string process_id)
+        public void UpdateSalesTable(double quantity, double price, double total, string process_id)
         {
-            string sql = string.Format("UPDATE {0} SET amount = {1} ,price = {2}, total = {3} WHERE process_id = {4}", table_name, quantity, price, total, process_id);
-            Console.WriteLine(sql);
-            SQLiteCommand cmd = new SQLiteCommand(sql, connection);
-            cmd.ExecuteNonQuery();
+            string sql = string.Format("UPDATE sales SET amount = {0} ,price = {1}, total = {2} WHERE process_id = {3}", quantity, price, total, process_id);
+            using (SQLiteCommand cmd = new SQLiteCommand(sql, connection))
+            {
+                cmd.ExecuteNonQuery(); 
+            }
         }
 
 
